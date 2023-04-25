@@ -1,7 +1,5 @@
 package T3;
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -10,6 +8,7 @@ import java.util.Stack;
 public class Calculator {
 
     private static final String OPERATORS = "+-*/";
+    private static final double ERROR = Double.NaN;
 
     public static double arithmeticOperations(String message) {
         Stack<Double> stack = new Stack<>();
@@ -26,31 +25,38 @@ public class Calculator {
                     numberBuilder.setLength(0);
                 }
             } else if (OPERATORS.contains(String.valueOf(c))) {
-                operator(stack,c);
+                if(stack.size()<2){
+                    return ERROR;
+                } else {
+                    operator(stack,c);
+                }
             }
         }
+
+        if (stack.isEmpty()){
+            return ERROR;
+        }
+
         return stack.pop();
     }
 
-    private static void operator(Stack<Double> queue, char operator) {
-        double firstNumber = queue.pop();
-        double secondNumber = queue.pop();
+    private static void operator(Stack<Double> stack, char operator) {
+        double firstNumber = stack.pop();
+        double secondNumber = stack.pop();
 
         switch (operator) {
             case '+':
-                queue.add(secondNumber + firstNumber);
+                stack.add(secondNumber + firstNumber);
                 break;
             case '-':
-                queue.add(secondNumber - firstNumber);
+                stack.add(secondNumber - firstNumber);
                 break;
             case '*':
-                queue.add(secondNumber * firstNumber);
+                stack.add(secondNumber * firstNumber);
                 break;
             case '/':
-                queue.add(secondNumber / firstNumber);
+                stack.add(secondNumber / firstNumber);
                 break;
-            default:
-                throw new IllegalArgumentException("Invalid operator: " + operator);
         }
     }
 

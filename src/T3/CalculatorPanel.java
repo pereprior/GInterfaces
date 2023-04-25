@@ -10,9 +10,9 @@ import java.awt.event.ActionListener;
  */
 public class CalculatorPanel extends JPanel implements ActionListener {
 
-    private String[] printValues = {"OFF", "CE", "C", "=", "7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", " ", "0", ".", "/"};
-    private JTextField resultField;
-    private static StringBuilder result = new StringBuilder();
+    private static final String[] PRINT_VALUES = {"OFF", "C", "CE", "=", "7", "8", "9", "+", "4", "5", "6", "-", "1", "2", "3", "*", " ", "0", ".", "/"};
+    private static final StringBuilder RESULT = new StringBuilder();
+    private final JTextField resultField;
 
     public CalculatorPanel() {
         resultField = new JTextField();
@@ -21,7 +21,7 @@ public class CalculatorPanel extends JPanel implements ActionListener {
         resultField.setEditable(false);
         this.add(resultField);
 
-        for (String value : printValues) {
+        for (String value : PRINT_VALUES) {
             JButton button = new JButton(value);
             button.setPreferredSize(new Dimension(65, 50));
             button.addActionListener(this);
@@ -32,32 +32,30 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String buttonText = e.getActionCommand();
-        String sequence = "";
 
         switch (e.getActionCommand()){
             case "OFF":
                 System.exit(0);
                 break;
             case "=":
-                sequence = result.append(buttonText).toString();
-                result.setLength(0);
-                result.append(Calculator.arithmeticOperations(sequence));
-                sequence=result.toString();
+                String sequence = RESULT.append(buttonText).toString();
+                RESULT.setLength(0);
+                RESULT.append(Calculator.arithmeticOperations(sequence));
                 break;
             case "CE":
-                result.delete(result.length() - 1, result.length());
-                sequence = result.toString();
+                if(!RESULT.isEmpty()){
+                    RESULT.delete(RESULT.length() - 1, RESULT.length());
+                }
                 break;
             case "C":
-                result.setLength(0);
-                sequence="0";
+                RESULT.setLength(0);
                 break;
             default:
-                sequence = result.append(buttonText).toString();
+                RESULT.append(buttonText);
                 break;
         }
 
-        resultField.setText(sequence);
+        resultField.setText(RESULT.toString());
     }
 
 }
