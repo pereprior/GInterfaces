@@ -33,6 +33,10 @@ public class CalculatorPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String buttonText = e.getActionCommand();
 
+        if (resultField.getText().equals("NaN")) {
+            RESULT.setLength(0);
+        }
+
         switch (e.getActionCommand()){
             case "OFF":
                 System.exit(0);
