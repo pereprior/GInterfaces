@@ -7,8 +7,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Objects;
-
 
 /**
  * @author Pere Prior
@@ -46,17 +44,33 @@ public class MainFrame extends JFrame implements ActionListener {
                 ArrayList<String> data = NewDataPanel.getTextFromFields();
                 if(data.size()>5){
                     playersList.add(new Player(data));
-                    System.out.println(playersList);
+                    JOptionPane.showMessageDialog(null,"The new player is added correctly");
                 } else {
                     teamsList.add(new Team(data));
-                    System.out.println(teamsList);
+                    JOptionPane.showMessageDialog(null,"The new team is added correctly");
                 }
+                NewDataPanel.setEmptyFields();
                 break;
             case "VIEW TEAMS":
-                nextViewPanel("Country:","League:",teamDataList(teamsList,1),teamDataList(teamsList,2));
+                if (teamsList.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"There's no elements");
+                } else {
+                    nextViewPanel("TEAMS:",teamDataList(teamsList),true);
+                }
                 break;
             case "VIEW PLAYERS":
-                nextViewPanel("Team:","Position:",playerDataList(playersList,1),playerDataList(playersList,2));
+                if (playersList.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"There's no elements");
+                } else {
+                    nextViewPanel("PLAYERS:",playerDataList(playersList),false);
+                }
+                break;
+            case "<-- RETURN <--":
+                NewDataPanel.textFields.clear();
+                remove(viewData);
+                add(menu);
+                revalidate();
+                repaint();
                 break;
         }
     }
@@ -71,34 +85,31 @@ public class MainFrame extends JFrame implements ActionListener {
         repaint();
     }
 
-    private void nextViewPanel(String firstOption, String secondOption, ArrayList<String> firstList, ArrayList<String> secondList){
+    private void nextViewPanel(String firstOption, ArrayList<String> firstList, boolean isTeam){
         remove(newData);
-        viewData =new ViewDataPanel(firstOption,secondOption,firstList,secondList);
+        if(isTeam){
+            viewData =new ViewDataPanel(firstOption,firstList,teamsList);
+        } else {
+            viewData =new ViewDataPanel(firstOption,firstList,playersList);
+        }
+        viewData.EXIT_BUTTON.addActionListener(this);
         add(viewData);
         revalidate();
         repaint();
     }
 
-    private ArrayList<String> teamDataList(ArrayList<Team> teams, int columnNumber){
+    private ArrayList<String> teamDataList(ArrayList<Team> teams){
         ArrayList<String> teamList = new ArrayList<>();
         for(int i = 0; i<teams.size(); i++){
-            if(columnNumber==1){
-                teamList.add(teamsList.get(i).getCountry());
-            } else if (columnNumber==2){
-                teamList.add(teamsList.get(i).getLeague());
-            }
+            teamList.add(teamsList.get(i).getName());
         }
         return teamList;
     }
 
-    private ArrayList<String> playerDataList(ArrayList<Player> teams, int columnNumber){
+    private ArrayList<String> playerDataList(ArrayList<Player> teams){
         ArrayList<String> playerList = new ArrayList<>();
         for(int i = 0; i<teams.size(); i++){
-            if(columnNumber==1){
-                playerList.add(playersList.get(i).getTeam());
-            } else if (columnNumber==2){
-                playerList.add(playersList.get(i).getPosition());
-            }
+            playerList.add(playersList.get(i).getName());
         }
         return playerList;
     }
